@@ -185,7 +185,7 @@ def download_messages(server, filename, messages, config):
         # fetch message
         typ, data = server.fetch(str(messages[msg_id]), "RFC822")
         assert('OK' == typ)
-        text = data[0][1].strip().replace('\r', '')
+        text = data[0][1].decode().strip().replace('\r', '')
         if config['thunderbird']:
             # This avoids Thunderbird mistaking a line starting "From  " as the start
             # of a new message. _Might_ also apply to other mail lients - unknown
@@ -286,8 +286,9 @@ def scan_folder(server, foldername, nospinner):
                 raise SkipFolderException("FETCH %s failed: %s" % (num, data))
 
             header = data[0][1].strip()
+            # arrives as a bytearray, so decode
             # remove newlines inside Message-Id (a dumb Exchange trait)
-            header = BLANKS_RE.sub(' ', header)
+            header = BLANKS_RE.sub(' ', header.decode())
             try:
                 msg_id = MSGID_RE.match(header).group(1)
                 if msg_id not in messages.keys():
@@ -368,10 +369,13 @@ def parse_list(row):
 def get_hierarchy_delimiter(server):
     """Queries the imapd for the hierarchy delimiter, eg. '.' in INBOX.Sent"""
     # see RFC 3501 page 39 paragraph 4
-    typ, data = server.list('', '')
+    # and especially https://pymotw.com/3/imaplib/
+    # section "Listing Mailboxes"
+    typ, data = server.list()
     assert(typ == 'OK')
-    assert(len(data) == 1)
-    lst = parse_list(data[0])  # [attribs, hierarchy delimiter, root name]
+    # arrives as a bytearray, need to decode it
+    decoded_row = data[0].decode()
+    lst = parse_list(decoded_row)  # [attribs, hierarchy delimiter, root name]
     hierarchy_delim = lst[1]
     # NIL if there is no hierarchy
     if 'NIL' == hierarchy_delim:
@@ -397,7 +401,8 @@ def get_names(server, compress, thunderbird, nospinner):
 
     # parse each LIST, find folder name
     for row in data:
-        lst = parse_list(row)
+        decoded_row = row.decode()
+        lst = parse_list(decoded_row)
         foldername = lst[2]
         suffix = {'none': '', 'gzip': '.gz', 'bzip2': '.bz2'}[compress]
         if thunderbird:
