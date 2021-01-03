@@ -383,7 +383,7 @@ def get_hierarchy_delimiter(server):
     return hierarchy_delim
 
 
-def get_names(server, compress, thunderbird, nospinner):
+def get_names(server, compress, thunderbird, nospinner, listfolders):
     """Get list of folders, returns [(FolderName,FileName)]"""
 
     spinner = Spinner("Finding Folders", nospinner)
@@ -418,6 +418,12 @@ def get_names(server, compress, thunderbird, nospinner):
     # done
     spinner.stop()
     print(": %s folders" % (len(names)))
+
+    if listfolders:
+        print("Folders:")
+        for n in names:
+            print(n[0])
+
     return names
 
 
@@ -432,6 +438,8 @@ def print_usage():
     print(" -b --compress=bzip2       Use mbox.bz2 files. Appending not supported: use -y.")
     print(" -f --=folder              Specifify which folders use.  Comma separated list.")
     print(" -e --ssl                  Use SSL.  Port defaults to 993.")
+    print(" -l --list-folders         Lists folders visible to imapbackup and then exits.")
+    print("                           Does NOT retrieve messages, ONLY retrieves folders.")
     print(" -k KEY --key=KEY          PEM private key file for SSL.  Specify cert, too.")
     print(" -c CERT --cert=CERT       PEM certificate chain for SSL.  Specify key, too.")
     print("                           Python's SSL module doesn't check the cert chain.")
@@ -451,9 +459,9 @@ def process_cline():
     """Uses getopt to process command line, returns (config, warnings, errors)"""
     # read command line
     try:
-        short_args = "aynzbekt:c:s:u:p:f:"
+        short_args = "aynzbelkt:c:s:u:p:f:"
         long_args = ["append-to-mboxes", "yes-overwrite-mboxes", "compress=",
-                     "ssl", "timeout", "keyfile=", "certfile=", "server=", "user=", "pass=",
+                     "ssl", "timeout", "list-folders", "keyfile=", "certfile=", "server=", "user=", "pass=",
                      "folders=", "thunderbird", "nospinner"]
         opts, extraargs = getopt.getopt(sys.argv[1:], short_args, long_args)
     except getopt.GetoptError:
@@ -461,7 +469,7 @@ def process_cline():
 
     warnings = []
     config = {'compress': 'none', 'overwrite': False, 'usessl': False,
-              'thunderbird': False, 'nospinner': False}
+              'thunderbird': False, 'nospinner': False, 'list-folders': False}
     errors = []
 
     # empty command line
@@ -488,6 +496,8 @@ def process_cline():
                 errors.append("Invalid compression type specified.")
         elif option in ("-e", "--ssl"):
             config['usessl'] = True
+        elif option in ("-l", "--list-folders"):
+            config['list-folders'] = True
         elif option in ("-k", "--keyfile"):
             config['keyfilename'] = value
         elif option in ("-f", "--folders"):
@@ -679,7 +689,9 @@ def main():
         config = get_config()
         server = connect_and_login(config)
         names = get_names(server, config['compress'], config['thunderbird'],
-                          config['nospinner'])
+                          config['nospinner'], config['list-folders'])
+        if config.get('list-folders'):
+            return;
         if config.get('folders'):
             dirs = map(lambda x: x.strip(), config.get('folders').split(','))
             if config['thunderbird']:
