@@ -154,7 +154,7 @@ def download_messages(server, filename, messages, config):
     elif config['compress'] == 'bzip2':
         mbox = bz2.BZ2File(filename, 'wb', 512*1024, 9)
     else:
-        mbox = file(filename, 'ab')
+        mbox = open(filename, 'ab')
 
     # the folder has already been selected by scanFolder()
 
@@ -180,7 +180,7 @@ def download_messages(server, filename, messages, config):
         # the other headers
         if UUID in msg_id:
             buf = buf + "Message-Id: %s\n" % msg_id
-        mbox.write(buf)
+        mbox.write(bytearray(buf, encoding="utf-8"))
 
         # fetch message
         typ, data = server.fetch(messages[msg_id], "RFC822")
@@ -190,8 +190,8 @@ def download_messages(server, filename, messages, config):
             # This avoids Thunderbird mistaking a line starting "From  " as the start
             # of a new message. _Might_ also apply to other mail lients - unknown
             text = text.replace("\nFrom ", "\n From ")
-        mbox.write(text)
-        mbox.write('\n\n')
+        mbox.write(bytearray(text, encoding="utf-8"))
+        mbox.write(bytearray('\n\n', encoding="utf-8"))
 
         size = len(text)
         biggest = max(size, biggest)
@@ -228,13 +228,13 @@ def scan_file(filename, compress, overwrite, nospinner):
     elif compress == 'bzip2':
         mbox = bz2.BZ2File(filename, 'rb')
     else:
-        mbox = file(filename, 'rb')
+        mbox = open(filename, 'rb')
 
     messages = {}
 
     # each message
     i = 0
-    for message in mailbox.PortableUnixMailbox(mbox):
+    for message in mailbox.mbox(filename):
         header = ''
         # We assume all messages on disk have message-ids
         try:
