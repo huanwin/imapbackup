@@ -693,11 +693,11 @@ def main():
         if config.get('list-folders'):
             return;
         if config.get('folders'):
-            dirs = map(lambda x: x.strip(), config.get('folders').split(','))
+            dirs = list(map(lambda x: x.strip(), config.get('folders').split(',')))
             if config['thunderbird']:
                 dirs = [i.replace("Inbox", "INBOX", 1) if i.startswith("Inbox") else i
                         for i in dirs]
-            names = filter(lambda x: x[0] in dirs, names)
+            names = list(filter(lambda x: x[0] in dirs, names))
 
         # for n, name in enumerate(names): # *DEBUG
         #   print n, name # *DEBUG
