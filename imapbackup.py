@@ -649,12 +649,12 @@ def connect_and_login(config):
 
         print("Logging in as '%s'" % (config['user']))
         server.login(config['user'], config['pass'])
-    except socket.gaierror, e:
+    except socket.gaierror as e:
         (err, desc) = e
         print("ERROR: problem looking up server '%s' (%s %s)" % (
             config['server'], err, desc))
         sys.exit(3)
-    except socket.error, e:
+    except socket.error as e:
         if str(e) == "SSL_CTX_use_PrivateKey_file error":
             print("ERROR: error reading private key file '%s'" % (
                 config['keyfilename']))
@@ -678,7 +678,7 @@ def create_folder_structure(names):
             try:
                 # print "*** mkdir:", disk_foldername  # *DEBUG
                 os.mkdir(disk_foldername)
-            except OSError, e:
+            except OSError as e:
                 if e.errno != 17:
                     raise
 
@@ -721,16 +721,16 @@ def main():
 
                 download_messages(server, filename, new_messages, config)
 
-            except SkipFolderException, e:
+            except SkipFolderException as e:
                 print(e)
 
         print("Disconnecting")
         server.logout()
-    except socket.error, e:
+    except socket.error as e:
         (err, desc) = e
         print("ERROR: %s %s" % (err, desc))
         sys.exit(4)
-    except imaplib.IMAP4.error, e:
+    except imaplib.IMAP4.error as e:
         print("ERROR:", e)
         sys.exit(5)
 
