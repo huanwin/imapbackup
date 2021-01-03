@@ -183,7 +183,7 @@ def download_messages(server, filename, messages, config):
         mbox.write(bytearray(buf, encoding="utf-8"))
 
         # fetch message
-        typ, data = server.fetch(messages[msg_id], "RFC822")
+        typ, data = server.fetch(str(messages[msg_id]), "RFC822")
         assert('OK' == typ)
         text = data[0][1].strip().replace('\r', '')
         if config['thunderbird']:
@@ -281,7 +281,7 @@ def scan_folder(server, foldername, nospinner):
         for num in range(1, num_msgs+1):
             # Retrieve Message-Id, making sure we don't mark all messages as read
             typ, data = server.fetch(
-                num, '(BODY.PEEK[HEADER.FIELDS (MESSAGE-ID)])')
+                str(num), '(BODY.PEEK[HEADER.FIELDS (MESSAGE-ID)])')
             if 'OK' != typ:
                 raise SkipFolderException("FETCH %s failed: %s" % (num, data))
 
