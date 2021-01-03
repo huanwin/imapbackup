@@ -1,9 +1,24 @@
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/rcarmo/imapbackup.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/rcarmo/imapbackup/context:python)
-
 imapbackup
 ==========
 
-A Python script for creating full backups of IMAP mailboxes
+## ⚠⚠⚠ Warning
+
+
+*20200102T21:19:00T*<br>
+This has been forked from [rcarmo][rcarmo] by [huanwin][huanwin], and modified for personal use. I.e. it has only been (somewhat) confirmed to be working with the following characteristics (all must be satisfied unless otherwise noted):
+- on Windows 10 Home version 2004
+- using Python v3.9.1
+- using the `--ssl` flag
+- for Gmail (i.e. for `--server=imap.gmail.com:993`)
+    - using an app password
+- under the following, **separate** use cases:
+    1. using the `-l`, `--list-folders` flag, OR
+    2. using the `--folder=FOLDERNAME` flag 
+
+
+## Overview
+
+A Python script for creating full backups of IMAP mailboxes.
 
 ## Background
 
@@ -38,3 +53,5 @@ For tradition's sake, here goes:
 IN NO EVENT WILL I BE LIABLE FOR ANY DAMAGES WHATSOEVER (INCLUDING, WITHOUT LIMITATION, THOSE RESULTING FROM LOST PROFITS, LOST DATA, LOST REVENUE OR BUSINESS INTERRUPTION) ARISING OUT OF THE USE, INABILITY TO USE, OR THE RESULTS OF USE OF, THIS PROGRAM. WITHOUT LIMITING THE FOREGOING, I SHALL NOT BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES THAT MAY RESULT FROM THE USE OF THIS SCRIPT OR ANY PORTION THEREOF WHETHER ARISING UNDER CONTRACT, NEGLIGENCE, TORT OR ANY OTHER LAW OR CAUSE OF ACTION. I WILL ALSO PROVIDE NO SUPPORT WHATSOEVER, OTHER THAN ACCEPTING FIXES AND UPDATING THE SCRIPT AS IS DEEMED NECESSARY.
 
 [tao]: http://taoofmac.com/space/projects/imapbackup
+[rcarmo]: https://github.com/rcarmo
+[huanwin]: https://github.com/huanwin
