@@ -125,7 +125,7 @@ def string_from_file(value):
     the '@' with a '\' to treat it as a literal.
     """
 
-    assert isinstance(value, basestring)
+    assert isinstance(value, str)
 
     if not value or value[0] not in ["\\", "@"]:
         return value
