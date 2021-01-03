@@ -436,7 +436,7 @@ def print_usage():
     print(" -n --compress=none        Use one plain mbox file for each folder. (default)")
     print(" -z --compress=gzip        Use mbox.gz files.  Appending may be very slow.")
     print(" -b --compress=bzip2       Use mbox.bz2 files. Appending not supported: use -y.")
-    print(" -f --=folder              Specifify which folders use.  Comma separated list.")
+    print(" -f --folders=             Specify which folders to use.  Comma separated list.")
     print(" -e --ssl                  Use SSL.  Port defaults to 993.")
     print(" -l --list-folders         Lists folders visible to imapbackup and then exits.")
     print("                           Does NOT retrieve messages, ONLY retrieves folders.")
