@@ -175,7 +175,7 @@ def download_messages(server, filename, messages, config):
         # in mbox files.  Note that RFC 4155 specifies that the date be
         # in the same format as the output of ctime(3), which is required
         # by ISO C to use English day and month abbreviations.
-        buf = "From nobody %s\n" % time.ctime()
+        buf = "From imapbackup %s\n" % time.ctime()
         # If this is one of our synthesised Message-IDs, insert it before
         # the other headers
         if UUID in msg_id:
