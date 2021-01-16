@@ -110,6 +110,7 @@ def pretty_byte_count(num):
 
 # Regular expressions for parsing
 MSGID_RE = re.compile("^Message\-Id\: (.+)", re.IGNORECASE + re.MULTILINE)
+MSGID_RE_NO_COLON = re.compile("^Message\-Id", re.IGNORECASE + re.MULTILINE)
 BLANKS_RE = re.compile(r'\s+', re.MULTILINE)
 
 # Constants
@@ -238,12 +239,18 @@ def scan_file(filename, compress, overwrite, nospinner):
         header = ''
         # We assume all messages on disk have message-ids
         try:
-            header = ''.join(message.getfirstmatchingheader('message-id'))
+            for h in message._headers:
+                #if re.search(MSGID_RE, h[0]):
+                if re.search(MSGID_RE_NO_COLON, h[0]):
+                    header = "message-id: " + h[1]
         except KeyError:
             # No message ID was found. Warn the user and move on
             print
             print("WARNING: Message #%d in %s" % (i, filename),)
             print("has no Message-Id header.")
+
+        if i == 16:
+            breakhere = True
 
         header = BLANKS_RE.sub(' ', header.strip())
         try:
